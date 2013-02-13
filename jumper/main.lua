@@ -14,7 +14,7 @@ Player = Animation:extend
 		left = { frames = {7, 8, 9, 10, 11, 12}, fps = 10}
 	},
 	
-    acceleration = { y = 600 },
+    acceleration = { x = 30, y = 600 },
     canJump = false,
  
     onUpdate = function (self)
@@ -24,16 +24,21 @@ Player = Animation:extend
         elseif the.keys:pressed('right') then
             self.velocity.x = 100
 			self:play('right')
+		elseif the.keys:pressed('a') then
+			the.app:quit()
         else
             self.velocity.x = 0
 			self:freeze()
         end
+		
  
         if the.keys:justPressed(' ') and self.canJump then
 		playSound('Jump6.wav')
             self.velocity.y = -500
             self.canJump = false
         end
+		
+		
     end,
  
     onCollide = function (self)
@@ -54,18 +59,30 @@ Platform = Tile:extend
 	end
 }
 
+function CheckFalling(pla)
+
+	if pla.y > the.app.height then
+		pla.y = 0
+		pla.x = 0
+	end
+end
+
 the.app = App:new
 {
+	name = 'Jumper',
 	onRun = function(self)
 		self.player = Player:new{x = 0, y = 0}
 		self:add(self.player)
 		self.platforms = Group:new()
 		self.platforms:add(Platform:new{ x = 0, y = 400 })
 		self.platforms:add(Platform:new{ x = 250, y = 400})
+		self.platforms:add(Platform:new{ x = 500, y = 400})
+				self.platforms:add(Platform:new{ x = 750, y = 400})
 		self:add(self.platforms)
 	end,
 	
 	onUpdate = function(self)
 		self.platforms:collide(self.player)
+		CheckFalling(self.player)
 	end
 }
