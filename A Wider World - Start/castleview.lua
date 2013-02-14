@@ -60,5 +60,13 @@ CastleView = View:extend
     onUpdate = function (self)
         self.map:subdisplace(the.hero)
         self.objects:collide(self.objects)
+		
+		if not the.hero.active then
+			the.app.view = EndingView:new{ won = false }
+		end
+		
+		if not the.dragon.active then
+			the.app.view = EndingView:new{ won = true }
+		end
     end
 }

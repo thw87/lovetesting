@@ -2,12 +2,12 @@ STRICT = true
 DEBUG = true
  
 require 'zoetrope'
-require 'castleview'
+require 'levelview'
 require 'endingview'
  
 the.app = App:new
 {
     onRun = function (self)
-         self.view = CastleView:new{}
+         self.view = LevelView:new{}
     end
 }
