@@ -1,0 +1,154 @@
+<!--Saved by Quest 5.3.4762.29157-->
+<asl version="530">
+  <include ref="Deutsch.aslx" />
+  <include ref="Core.aslx" />
+  <game name="Space Power">
+    <gameid>5058693b-3087-4279-9c05-388f65c01d48</gameid>
+    <version>1.0</version>
+    <firstpublished>2013</firstpublished>
+    <author>thw</author>
+    <category>Sci-Fi</category>
+    <description>bla</description>
+  </game>
+  <object name="Sternenkarte">
+    <inherit name="editor_room" />
+    <description>Du befindest dich auf der Brücke deines Flaggschiffs</description>
+    <usedefaultprefix type="boolean">false</usedefaultprefix>
+    <object name="player">
+      <inherit name="editor_object" />
+      <inherit name="editor_player" />
+      <Title>Kadett</Title>
+      <statusattributes type="stringdictionary">Title = </statusattributes>
+    </object>
+    <exit name="Menü" alias="Menü" to="Hauptmenü">
+      <locked type="boolean">false</locked>
+      <visible type="boolean">false</visible>
+    </exit>
+    <object name="neut">
+      <inherit name="editor_object" />
+      <alias>Neutraler Planet</alias>
+      <look>Ein neutraler Planet.</look>
+      <angreifen type="script">
+        neut.conquered = neut.conquered+1
+        CheckNeut
+      </angreifen>
+      <displayverbs type="list"></displayverbs>
+      <inventoryverbs type="list"></inventoryverbs>
+      <drop type="boolean">false</drop>
+      <switchedon type="boolean">false</switchedon>
+      <conquered type="int">0</conquered>
+      <visible type="boolean">false</visible>
+    </object>
+    <object name="General Smith">
+      <inherit name="editor_object" />
+      <inherit name="namedmale" />
+      <look>Der General ist im Holokommunikator zu erkennen.</look>
+      <visible />
+      <suffix>auf dem Holokommunikator</suffix>
+      <displayverbs type="list"></displayverbs>
+      <drop type="boolean">false</drop>
+      <kommunikationaufbauen type="script">
+        msg ("Stillgestanden Leutnant! Ihr wurdet meiner Expansionsflotte zugeteilt, unsere Aufgabe ist es diese Galaxie im Namen der Menschen zu erobern. Unsere Aufklärung ergab, dass wir nicht die einzigen sind, die dies vorhaben. Es wird also früher oder später zum Konflikt mit den anderen Völkern kommen. Zunächst ist es jedoch wichtig möglichst viele neutrale Systeme zu erobern um unsere Position zu stärken. Zeigt, dass ihr das Zeug dazu habt ein Offizier des Imperium Humanis zu sein!")
+        MakeObjectVisible (neut)
+      </kommunikationaufbauen>
+    </object>
+    <object name="counter">
+      <inherit name="editor_object" />
+      <visible type="boolean">false</visible>
+      <usedefaultprefix type="boolean">false</usedefaultprefix>
+      <displayverbs type="list"></displayverbs>
+      <inventoryverbs type="list"></inventoryverbs>
+      <drop type="boolean">false</drop>
+      <neutralplanets type="int">0</neutralplanets>
+    </object>
+    <object name="PCcontroled">
+      <inherit name="editor_object" />
+      <alias>Planet anderer Fraktion</alias>
+      <usedefaultprefix />
+      <displayverbs type="list"></displayverbs>
+      <drop type="boolean">false</drop>
+      <angreifen type="script">
+        PCcontroled.conquered = PCcontroled.conquered+1
+        CheckPC
+      </angreifen>
+      <conquered type="int">0</conquered>
+      <visible type="boolean">false</visible>
+    </object>
+    <object name="NPCControled">
+      <inherit name="editor_object" />
+      <displayverbs type="list"></displayverbs>
+      <conquered type="int">0</conquered>
+      <angreifen type="script">
+        NPCControled.conquered = NPCControled.conquered+1
+        CheckNPC
+      </angreifen>
+      <visible type="boolean">false</visible>
+    </object>
+    <object name="Mission 01">
+      <inherit name="editor_object" />
+      <visible type="boolean">false</visible>
+      <usedefaultprefix type="boolean">false</usedefaultprefix>
+      <drop type="boolean">false</drop>
+      <displayverbs type="list"></displayverbs>
+      <annehmen type="script">
+        msg ("Du fliegst erfolgreich die erste Mission")
+        MakeObjectInvisible (Mission 01)
+      </annehmen>
+    </object>
+  </object>
+  <object name="Hauptmenü">
+    <inherit name="editor_room" />
+    <description>Das Hauptmenü das Spiels. der ganze fancy Stuff kann hier eingestellt werden.</description>
+    <usedefaultprefix type="boolean">false</usedefaultprefix>
+    <exit alias="Sternenkarte" to="Sternenkarte" />
+  </object>
+  <verb>
+    <property>angreifen</property>
+    <pattern>angreifen</pattern>
+    <defaultexpression>"Das kannst Du nicht machen."</defaultexpression>
+  </verb>
+  <turnscript>
+    <enabled type="boolean">false</enabled>
+    <script>
+      CheckNeut
+      CheckPC
+      CheckNPC
+    </script>
+  </turnscript>
+  <verb>
+    <property>annehmen</property>
+    <pattern>annehmen</pattern>
+    <defaultexpression>"Das kannst Du nicht machen."</defaultexpression>
+  </verb>
+  <verb>
+    <property>kommunikationaufbauen</property>
+    <pattern>kommunikation aufbauen</pattern>
+    <defaultexpression>"Das kannst Du nicht machen."</defaultexpression>
+  </verb>
+  <function name="CheckNeut">
+    if (neut.conquered = 2) {
+      msg ("Ein guter Anfang "+ player.Title + ", ihr tragt jetzt den Titel Oberleutnant!")
+      player.Title = "Oberleutnant"
+    }
+    else if (neut.conquered = 3) {
+      msg ("Das Imperium blickt mit Wohlwollen auf eure Expansion, "+player.Title)
+      EnableTimer (first test)
+    }
+    else if (neut.conquered = 5) {
+      msg ("Gratulation "+player.Title+" du bist jetzt Hauptmann.")
+      player.Title = "Hauptmann"
+    }
+  </function>
+  <function name="CheckPC" />
+  <function name="CheckNPC" />
+  <function name="CheckPreference">
+  </function>
+  <timer name="first test">
+    <interval>1</interval>
+    <script>
+      msg ("Achtung " + player.Title+", Es ist eine neue Mission verfügbar!")
+      DisableTimer (first test)
+      MakeObjectVisible (Mission 01)
+    </script>
+  </timer>
+</asl>
